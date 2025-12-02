@@ -1,0 +1,11 @@
+opencv-python==4.11.0.86
+opencv-python-headless==4.10.0.84
+torch==2.0.1
+torchaudio==2.0.2
+torchvision==0.15.2
+ultralytics==8.3.170
+tf_keras==2.20.1
+deepface==0.0.95
+numpy==1.26.4
+
+
