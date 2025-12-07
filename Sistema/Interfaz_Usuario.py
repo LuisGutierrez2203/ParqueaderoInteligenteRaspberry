@@ -19,14 +19,13 @@ import threading
 
 print("Cargando modelos de IA .............")
 
-sub_rut = "../"
 
 if os.name != "nt":
-    sub_rut = "./"
-
-
-zzz = YOLO(sub_rut + "modelos_IA/Extrac_placas.pt")
-xxx = YOLO(sub_rut + "modelos_IA/Segment_caracteres_gray4.pt")
+    zzz = YOLO("./modelos_IA/Extrac_placas.pt")
+    xxx = YOLO("./modelos_IA/Segment_caracteres_gray4.pt")
+else:
+    zzz = YOLO("../modelos_IA/Extrac_placas.pt")
+    xxx = YOLO("../modelos_IA/Segment_caracteres_gray4.pt")
 
 
 carpetas = ["Placa", "static"]
