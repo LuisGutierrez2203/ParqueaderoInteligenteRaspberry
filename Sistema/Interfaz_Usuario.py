@@ -1,3 +1,4 @@
+print("Cargando dependencias :..................")
 import tkinter as tk
 from tkinter import ttk
 
@@ -14,9 +15,19 @@ from deepface import DeepFace
 import os
 import cv2
 
-zzz = YOLO("../modelos_IA/Extrac_placas.pt")
-xxx = YOLO("../modelos_IA/Segment_caracteres_gray4.pt")
 import threading
+
+print("Cargando modelos de IA .............")
+
+sub_rut = "../"
+
+if os.name != "nt":
+    sub_rut = "./"
+
+
+zzz = YOLO(sub_rut + "modelos_IA/Extrac_placas.pt")
+xxx = YOLO(sub_rut + "modelos_IA/Segment_caracteres_gray4.pt")
+
 
 carpetas = ["Placa", "static"]
 for carpeta in carpetas:
