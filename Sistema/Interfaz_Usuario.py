@@ -19,14 +19,11 @@ import threading
 
 print("Cargando modelos de IA .............")
 
+base = os.path.dirname(os.path.abspath(__file__))
+raiz = os.path.abspath(os.path.join(base, ".."))
 
-if os.name != "nt":
-    zzz = YOLO("./modelos_IA/Extrac_placas.pt")
-    xxx = YOLO("./modelos_IA/Segment_caracteres_gray4.pt")
-else:
-    zzz = YOLO("../modelos_IA/Extrac_placas.pt")
-    xxx = YOLO("../modelos_IA/Segment_caracteres_gray4.pt")
-
+zzz = YOLO(os.path.join(raiz), "Modelos_IA", "Extrac_placas.pt")
+xxx = YOLO(os.path.join(raiz), "Modelos_IA", "Segment_caracteres_gray4.pt")
 
 carpetas = ["Placa", "static"]
 for carpeta in carpetas:
