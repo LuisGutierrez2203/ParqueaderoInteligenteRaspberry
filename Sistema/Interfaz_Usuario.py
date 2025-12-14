@@ -16,22 +16,23 @@ import os
 import cv2
 
 import threading
+import shutil
 
 print("Cargando modelos de IA .............")
 
-base = os.path.dirname(os.path.abspath(__file__))
-raiz = os.path.abspath(os.path.join(base, ".."))
+base = os.path.dirname(os.path.abspath(__file__))  # /Sistema
+raiz = os.path.abspath(os.path.join(base, ".."))  # /CodigoRaspberry
 
-zzz = YOLO(os.path.join(raiz), "Modelos_IA", "Extrac_placas.pt")
-xxx = YOLO(os.path.join(raiz), "Modelos_IA", "Segment_caracteres_gray4.pt")
+zzz = YOLO(os.path.join(raiz, "Modelos_IA", "Extrac_placas.pt"))
+xxx = YOLO(os.path.join(raiz, "Modelos_IA", "Segment_caracteres_gray4.pt"))
 
 carpetas = ["Placa", "static"]
 for carpeta in carpetas:
     os.makedirs(carpeta, exist_ok=True)
 
 
-cap1 = cv2.VideoCapture(0)
-cap2 = cv2.VideoCapture(1)
+cap1 = cv2.VideoCapture(1)
+cap2 = cv2.VideoCapture(0)
 
 
 class App(tk.Tk):
@@ -132,12 +133,14 @@ class VentanaIngresoVehiculo(tk.Frame):
         self.img_rostro = self.result[1]
         self.label_placa.config(text="Placa Extraida: " + self.txt_placa)
 
-        ruta = "Placa/" + self.txt_placa.replace(" ", "_")
-
-        if not os.path.exists(ruta):
-            os.makedirs(ruta)
+        # ruta = "Placa/" + self.txt_placa.replace(" ", "_")
+        self.ruta = os.path.join(base, "Placa", self.txt_placa.replace(" ", "_"))
+        print(self.ruta)
+        if not os.path.exists(self.ruta):
+            os.makedirs(self.ruta)
             cv2.imwrite(
-                ruta + "/capt_rostro" + self.label_placa + ".jpg", self.img_rostro
+                self.ruta + "capt_rostro" + self.txt_placa.replace(" ", "_") + ".jpg",
+                self.img_rostro,
             )
             print("📁 Carpeta creada correctamente")
 
@@ -194,28 +197,34 @@ class VentanaSalidaVehiculo(tk.Frame):
         )
         self.Captura.capturar()
 
-        tk.Button(self, text="Registrar Vehiculo", font=("Arial", 12)).grid(
-            row=4, column=2, columnspan=3
-        )
+        tk.Button(
+            self, text="Registrar Vehiculo", font=("Arial", 12), command=self.salida
+        ).grid(row=4, column=2, columnspan=3)
 
     def salida(self):
         self.result = self.Captura.cap()
         self.txt_placa = self.result[0]
         self.img_rostro = self.result[1]
 
-        cv2.imwrite("./static/capt_rostro.jpg", self.img_rostro)
+        cv2.imwrite(os.path.join(base, "static") + "/cap_rostro.jpg", self.img_rostro)
 
         self.label_placa.config(text="Placa Extraida: " + self.txt_placa)
 
-        self.ruta = "Placa/" + self.txt_placa.replace(" ", "_")
+        self.ruta = os.path.join(
+            base, "Placa", self.txt_placa.replace(" ", "_")
+        )  # "Placa/" + self.txt_placa.replace(" ", "_")
 
         if os.path.exists(self.ruta):
             self.ruta_rostro_registrado = os.listdir(self.ruta)
-            self.ruta_rostro_capt = "./static/capt_rostro.jpg"
+            print(self.ruta_rostro_registrado)
+            self.ruta_rostro_capt = os.path.join(
+                base, "static", "cap_rostro.jpg"
+            )  # "./static/capt_rostro.jpg"
 
             if len(self.ruta_rostro_registrado) == 1:
+                print(os.path.join(self.ruta, self.ruta_rostro_registrado[0]))
                 valid_rostro = DeepFace.verify(
-                    img1_path=self.ruta_rostro_registrado[0],
+                    img1_path=os.path.join(self.ruta, self.ruta_rostro_registrado[0]),
                     img2_path=self.ruta_rostro_capt,
                     model_name="Facenet",
                     detector_backend="mtcnn",
